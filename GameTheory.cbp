@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="GameTheory" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/GameTheory" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="include" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/GameTheory" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add directory="include" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Linker>
+			<Add library="../TonePlayer/bin/Debug/libfreetype-6.dll" />
+			<Add library="../TonePlayer/bin/Debug/libjpeg-9.dll" />
+			<Add library="../TonePlayer/bin/Debug/libpng16-16.dll" />
+			<Add library="../TonePlayer/bin/Debug/libtiff-5.dll" />
+			<Add library="../TonePlayer/bin/Debug/libwebp-7.dll" />
+			<Add library="../TonePlayer/bin/Debug/libwinpthread-1.dll" />
+			<Add library="../TonePlayer/bin/Debug/SDL2.dll" />
+			<Add library="../TonePlayer/bin/Debug/SDL2_image.dll" />
+			<Add library="../TonePlayer/bin/Debug/SDL2_ttf.dll" />
+			<Add library="../TonePlayer/bin/Debug/zlib1.dll" />
+		</Linker>
+		<Unit filename="Players.h" />
+		<Unit filename="include/Alternating.h" />
+		<Unit filename="include/Averager.h" />
+		<Unit filename="include/Brainy.h" />
+		<Unit filename="include/Crook.h" />
+		<Unit filename="include/Forgiving.h" />
+		<Unit filename="include/Friendly.h" />
+		<Unit filename="include/Masochist.h" />
+		<Unit filename="include/Player.h" />
+		<Unit filename="include/Random.h" />
+		<Unit filename="include/Shrewd.h" />
+		<Unit filename="include/StandardRating.h" />
+		<Unit filename="include/Strategical.h" />
+		<Unit filename="include/TitFor2Tats.h" />
+		<Unit filename="include/TitForTat.h" />
+		<Unit filename="include/Tolerant.h" />
+		<Unit filename="include/Touchy.h" />
+		<Unit filename="include/Traitor.h" />
+		<Unit filename="include/Unforgiving.h" />
+		<Unit filename="main.cpp" />
+		<Extensions>
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
