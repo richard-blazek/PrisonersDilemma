@@ -2,9 +2,9 @@
 
 auto limited_forgiveness = [](int limit)
 {
-	return [=](const std::vector<bool>& answers)
+	return [=](const std::vector<Answer>& answers)
 	{
-		return count(answers.begin(), answers.end(), false)<=limit;
+		return count(answers.begin(), answers.end(), Answer::Evil) <= limit ? Answer::Good : Answer::Evil;
 	};
 };
 

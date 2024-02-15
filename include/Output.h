@@ -48,9 +48,9 @@ public:
 
     ~Output()
     {
+        TTF_CloseFont(font);
         SDL_DestroyRenderer(rend);
         SDL_DestroyWindow(window);
-        TTF_CloseFont(font);
     }
 
     void Draw(const Players &players, int rounds)
@@ -70,8 +70,7 @@ public:
             SDL_SetRenderDrawColor(rend, i * 255 / players.size(), 255 - i * 255 / players.size(), 0, 0);
             SDL_RenderFillRect(rend, &dst_area);
 
-            
-            auto strategy_dest_rect = DrawStringVertical(players[i].StrategyName(), dst_area.x + dst_area.w / 4, window_height - 5, SDL_Color{0, 0, 0, 255});
+                        auto strategy_dest_rect = DrawStringVertical(players[i].StrategyName(), dst_area.x + dst_area.w / 4, window_height - 5, SDL_Color{0, 0, 0, 255});
 
             if (IsCursorIn(dst_area))
             {

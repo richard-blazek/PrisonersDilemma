@@ -1,16 +1,16 @@
 #pragma once
 
-Player brainy([](const std::vector<bool>& answers)
+Player brainy([](const std::vector<Answer>& answers)
 {
 	switch(answers.size())
 	{
 	case 0:
-		return false;
+		return Answer::Evil;
 	case 1:
 	case 2:
 	case 3:
-		return true;
+		return Answer::Good;
 	default:
-		return implies(answers[1], answers.size()%2==1)&&implies(answers[0]&&!answers[1]&&answers[2]&&!answers[3], false)&&answers.back();
+		return (answers.size() % 2 == 0 ? !answers[1] : Answer::Good) && !(answers[0] && !answers[1] && answers[2] && !answers[3]) && answers.back();
 	}
 }, "Brainy");

@@ -5,11 +5,7 @@
 #include <string>
 #include <SDL_ttf.h>
 
-bool implies(bool a, bool b)
-{
-	return !a || b;
-}
-
+#include "include/Answer.h"
 #include "include/Player.h"
 #include "include/Players.h"
 #include "include/Output.h"
@@ -20,7 +16,7 @@ bool implies(bool a, bool b)
 #include "include/players/Crook.h"
 #include "include/players/Forgiving.h"
 #include "include/players/Friendly.h"
-#include "include/players/Masochist.h"
+#include "include/players/Martyr.h"
 #include "include/players/Randomizer.h"
 #include "include/players/Shrewd.h"
 #include "include/players/Strategical.h"
@@ -31,11 +27,8 @@ bool implies(bool a, bool b)
 #include "include/players/Traitor.h"
 #include "include/players/Unforgiving.h"
 
-int main()
+void Main()
 {
-	srand(time(0));
-	TTF_Init();
-	SDL_Init(SDL_INIT_EVERYTHING);
 	Output output;
 
 	Players players_copy = {
@@ -67,7 +60,17 @@ int main()
 		}
 		SDL_Delay(50);
 	}
-	SDL_Quit();
+}
+
+int main()
+{
+	srand(time(0));
+	SDL_Init(SDL_INIT_EVERYTHING);
+	TTF_Init();
+
+	Main();
+	
 	TTF_Quit();
+	SDL_Quit();
 	return 0;
 }

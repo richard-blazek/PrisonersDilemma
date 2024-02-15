@@ -1,3 +1,3 @@
 #pragma once
 
-Player friendly([](const std::vector<bool>& x){return true;}, "Friendly");
+Player friendly([](const std::vector<Answer>& x){return Answer::Good;}, "Friendly");

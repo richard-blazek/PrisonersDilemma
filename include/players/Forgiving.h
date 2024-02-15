@@ -1,6 +1,7 @@
 #pragma once
 
-Player forgiving([](const std::vector<bool>& answers)
+Player forgiving([](const std::vector<Answer>& answers)
 {
-	return answers.empty()||(answers.size()%2==1||answers.back());
+	if (answers.empty() || answers.size() % 2 == 1) return Answer::Good;
+	return answers.back();
 }, "Forgiving");

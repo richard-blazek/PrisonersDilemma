@@ -1,13 +1,14 @@
 #pragma once
 
-Player touchy([](const std::vector<bool>& answers)
+Player touchy([](const std::vector<Answer>& answers)
 {
+	if (answers.empty()) return Answer::Good;
 	for(size_t i=1; i<answers.size(); ++i)
 	{
-		if(!answers[i-1]&&!answers[i])
+		if(answers[i-1] == Answer::Evil && answers[i] == Answer::Evil)
 		{
-			return false;
+			return Answer::Evil;
 		}
 	}
-	return answers.empty()||answers.back();
+	return answers.back();
 }, "Touchy");
