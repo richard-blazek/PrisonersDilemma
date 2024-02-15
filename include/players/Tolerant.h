@@ -1,6 +1,6 @@
 #pragma once
 
-Player tolerant([](const vector<bool>& answers)
+Player tolerant([](const std::vector<bool>& answers)
 {
 	for(size_t i=1; i<answers.size(); ++i)
 	{

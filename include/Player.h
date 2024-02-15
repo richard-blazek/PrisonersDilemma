@@ -1,21 +1,21 @@
 #pragma once
 
-using Strategy=std::function<bool(const vector<bool>&)>;
+using Strategy=std::function<bool(const std::vector<bool>&)>;
 
 class Player
 {
 private:
 	Strategy strategy;
-	string name;
-	uint32 score=0;
+	std::string name;
+	int score=0;
 public:
-	Player(Strategy strategy, string name)
+	Player(Strategy strategy, std::string name)
 		:strategy(strategy), name(name) {}
-    string StrategyName()const
+    std::string StrategyName()const
     {
     	return name;
     }
-    bool Answer(const vector<bool>& answers)const
+    bool Answer(const std::vector<bool>& answers)const
     {
     	return strategy(answers);
     }
@@ -28,7 +28,7 @@ public:
     {
     	score+=RatingT::Rating(i, other);
     }
-    uint32 Score()const
+    int Score()const
     {
     	return score;
     }

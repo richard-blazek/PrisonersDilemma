@@ -1,6 +1,6 @@
 #pragma once
 
-Player touchy([](const vector<bool>& answers)
+Player touchy([](const std::vector<bool>& answers)
 {
 	for(size_t i=1; i<answers.size(); ++i)
 	{

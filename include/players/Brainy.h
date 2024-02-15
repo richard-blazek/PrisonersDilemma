@@ -1,6 +1,6 @@
 #pragma once
 
-Player brainy([](const vector<bool>& answers)
+Player brainy([](const std::vector<bool>& answers)
 {
 	switch(answers.size())
 	{
