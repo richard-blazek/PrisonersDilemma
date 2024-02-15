@@ -20,24 +20,22 @@ private:
 
     void DrawString(std::string s, SDL_Rect dest, SDL_Color color)
     {
-        auto surface = TTF_RenderText_Solid(font, s.c_str(), SDL_Color{255, 255, 255});
+        auto surface = TTF_RenderText_Blended(font, s.c_str(), SDL_Color{255, 255, 255});
         auto texture = SDL_CreateTextureFromSurface(rend, surface);
+        dest.x += (dest.w - surface->w) / 2;
+        dest.y += (dest.h - surface->h) / 2;
+        dest.w = surface->w;
+        dest.h = surface->h;
         SDL_RenderCopy(rend, texture, 0, &dest);
         SDL_DestroyTexture(texture);
         SDL_FreeSurface(surface);
     }
 
-    SDL_Rect DrawStringVertical(std::string s, int x, int y, SDL_Color color)
+    SDL_Rect BoundingRectangle(const Players &players, int i, int window_width, int window_height)
     {
-        auto surface = TTF_RenderText_Solid(font, s.c_str(), SDL_Color{255, 255, 255});
-        auto texture = SDL_CreateTextureFromSurface(rend, surface);
-        auto dest = SDL_Rect{x, y - surface->w, surface->w, surface->h};
-        SDL_RenderCopyEx(rend, texture, 0, &dest, 270, 0, SDL_FLIP_NONE);
-        SDL_DestroyTexture(texture);
-        SDL_FreeSurface(surface);
-        return dest;
+        int height = players[i].Score() * window_height / players[0].Score();
+        return SDL_Rect{i * window_width / players.size(), window_height - height, window_width / players.size() * 10 / 11, height};
     }
-
 public:
     Output()
     {
@@ -65,19 +63,24 @@ public:
 
         for (int i = 0; i < players.size(); ++i)
         {
-            int height = players[i].Score() * window_height / players[0].Score();
-            SDL_Rect dst_area{i * window_width / players.size(), window_height - height, window_width / players.size() * 10 / 11, height};
+            auto area = BoundingRectangle(players, i, window_width, window_height);
             SDL_SetRenderDrawColor(rend, i * 255 / players.size(), 255 - i * 255 / players.size(), 0, 0);
-            SDL_RenderFillRect(rend, &dst_area);
+            SDL_RenderFillRect(rend, &area);
+        }
 
-                        auto strategy_dest_rect = DrawStringVertical(players[i].StrategyName(), dst_area.x + dst_area.w / 4, window_height - 5, SDL_Color{0, 0, 0, 255});
-
-            if (IsCursorIn(dst_area))
+        for (int i = 0; i < players.size(); ++i)
+        {
+            auto area = BoundingRectangle(players, i, window_width, window_height);
+            if (IsCursorIn(area))
             {
                 SDL_SetRenderDrawColor(rend, 64, 64, 255, 255);
-                SDL_RenderDrawRect(rend, &dst_area);
-                DrawString(std::to_string(players[i].Score() * 1000 / players[0].Score()), SDL_Rect{dst_area.x, dst_area.y + 5, dst_area.w, strategy_dest_rect.w}, SDL_Color{0, 0, 0, 255});
+                SDL_RenderDrawRect(rend, &area);
+                DrawString(std::to_string(players[i].Score() * 1000 / players[0].Score()), SDL_Rect{area.x, area.y + 5, area.w, 24}, SDL_Color{0, 0, 0, 255});
+
+                DrawString(players[i].StrategyName(), SDL_Rect{area.x, area.y + 50, area.w, 24}, SDL_Color{0, 0, 0, 255});
             }
         }
+
+        SDL_RenderPresent(rend);
     }
 };

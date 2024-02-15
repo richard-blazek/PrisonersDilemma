@@ -2,8 +2,8 @@
 
 enum class Answer
 {
-    Good,
-    Evil
+    Evil,
+    Good
 };
 
 Answer operator!(Answer a)

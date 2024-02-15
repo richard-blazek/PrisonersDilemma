@@ -54,8 +54,8 @@ void Main()
 			}
 			else if (event.type == SDL_MOUSEWHEEL)
 			{
-				rounds += 50 + event.wheel.y;
-				rounds %= 50;
+				rounds += 100 + event.wheel.y;
+				rounds %= 100;
 			}
 		}
 		SDL_Delay(50);
