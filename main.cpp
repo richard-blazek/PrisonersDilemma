@@ -3,29 +3,13 @@
 #include <iostream>
 #include <ctime>
 #include <string>
-#include <SDL_ttf.h>
+#include <SDL2/SDL_ttf.h>
 
 #include "include/Answer.h"
 #include "include/Player.h"
 #include "include/Players.h"
 #include "include/Output.h"
-
-#include "include/players/Alternating.h"
-#include "include/players/Averager.h"
-#include "include/players/Brainy.h"
-#include "include/players/Crook.h"
-#include "include/players/Forgiving.h"
-#include "include/players/Friendly.h"
-#include "include/players/Martyr.h"
-#include "include/players/Randomizer.h"
-#include "include/players/Shrewd.h"
-#include "include/players/Strategical.h"
-#include "include/players/TitFor2Tats.h"
-#include "include/players/TitForTat.h"
-#include "include/players/Tolerant.h"
-#include "include/players/Touchy.h"
-#include "include/players/Traitor.h"
-#include "include/players/Unforgiving.h"
+#include "include/Strategies.h"
 
 void Main()
 {

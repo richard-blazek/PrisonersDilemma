@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string>
-#include <SDL_ttf.h>
 #include "Players.h"
 
 class Output
