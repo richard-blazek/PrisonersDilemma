@@ -1,5 +1,3 @@
-use rand;
-
 pub trait Strategy : std::fmt::Debug {
     fn play(&self, answers: &[bool]) -> bool;
 }
@@ -52,7 +50,7 @@ impl Strategy for Averager {
 struct _Randomiser;
 impl Strategy for _Randomiser {
     fn play(&self, _answers: &[bool]) -> bool {
-        rand::random()
+        macroquad::rand::rand() % 2 == 0
     }
 }
 

@@ -18,7 +18,7 @@ fn draw_string(s: &str, dest: Rect, color: Color) {
 }
 
 fn bounding_rect(players: &[player::Player], count: usize, i: usize, window_width: f32, window_height: f32) -> Rect {
-    let height = players[i].score as f32 * window_height / players[0].score as f32;
+    let height = players[i].score() as f32 * window_height / players[0].score() as f32;
     Rect::new(
         i as f32 * window_width / count as f32,
         window_height - height,
@@ -64,7 +64,7 @@ async fn main() {
             }
 
             let score_rect = Rect::new(area.x, area.y + 5.0, area.w, 24.0);
-            draw_string(&format!("{}", player.score * 1000 / players[0].score), score_rect, BLACK);
+            draw_string(&format!("{}", player.score() * 1000 / players[0].score()), score_rect, BLACK);
 
             draw_text_ex(player.name().as_str(), area.x + area.w / 3.0, area.y + 35.0, TextParams {
                 font: None, font_size: FONT_SIZE, font_scale: 1.0, font_scale_aspect: 1.0, rotation: PI / 2.0, color: BLACK
