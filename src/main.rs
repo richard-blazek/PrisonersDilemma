@@ -27,22 +27,13 @@ fn bounding_rect(players: &[player::Player], count: usize, i: usize, window_widt
     )
 }
 
-fn window_defaults() -> Conf {
-    let mut conf = Conf::default();
-    conf.window_title = "Prisonner's Dilemma".to_string();
-    conf.window_width = 800;
-    conf.window_height = 600;
-    conf.window_resizable = true;
-    conf
-}
-
 fn mouse_scroll() -> i32 {
     let scroll = mouse_wheel().1;
     if scroll > 0.0 { 1 } else if scroll < 0.0 { -1 } else { 0 }
 }
 
 
-#[macroquad::main(window_defaults)]
+#[macroquad::main("Prisonner's dilemma")]
 async fn main() {
     let mut rounds = 5;
 
