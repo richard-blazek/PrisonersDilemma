@@ -4,12 +4,51 @@ use egui_plot::{Plot, Bar, BarChart};
 mod player;
 mod strategy;
 
+#[cfg(not(target_arch = "wasm32"))]
 fn main() -> eframe::Result {
     eframe::run_native(
         "Prisonner's dilemma",
         Default::default(),
         Box::new(|_| Ok(Box::<DilemmaApp>::default())),
     )
+}
+
+#[cfg(target_arch = "wasm32")]
+fn main() {
+    use eframe::wasm_bindgen::JsCast as _;
+
+    let web_options = eframe::WebOptions::default();
+    wasm_bindgen_futures::spawn_local(async {
+        let document = web_sys::window()
+            .expect("No window")
+            .document()
+            .expect("No document");
+
+        let canvas = document
+            .get_element_by_id("canvas_id")
+            .expect("Failed to find canvas_id")
+            .dyn_into::<web_sys::HtmlCanvasElement>()
+            .expect("canvas_id was not a HtmlCanvasElement");
+
+        let start_result = eframe::WebRunner::new()
+            .start(
+                canvas,
+                web_options,
+                Box::new(|cc| Ok(Box::<DilemmaApp>::default())),
+            )
+            .await;
+
+        // Remove the loading text and spinner:
+        if let Some(loading_text) = document.get_element_by_id("loading_text") {
+            match start_result {
+                Ok(_) => loading_text.remove(),
+                Err(e) => {
+                    loading_text.set_inner_html("Cannot start the app");
+                    panic!("Failed to start eframe: {e:?}");
+                }
+            }
+        }
+    });
 }
 
 struct DilemmaApp {
