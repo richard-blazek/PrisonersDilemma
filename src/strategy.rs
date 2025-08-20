@@ -47,14 +47,6 @@ impl Strategy for Averager {
 }
 
 #[derive(Debug, Clone, Copy)]
-struct _Randomiser;
-impl Strategy for _Randomiser {
-    fn play(&self, _answers: &[bool]) -> bool {
-        rand::random()
-    }
-}
-
-#[derive(Debug, Clone, Copy)]
 struct Crook;
 impl Strategy for Crook {
     fn play(&self, answers: &[bool]) -> bool {
@@ -196,7 +188,6 @@ pub fn all_strategies() -> Vec<Box<dyn Strategy>> {
         Box::new(Tolerant),
         Box::new(Agreeable),
         Box::new(Averager),
-        // Box::new(_Randomiser),
         Box::new(Crook),
         Box::new(EvilAvg),
         Box::new(EvilNegative),
