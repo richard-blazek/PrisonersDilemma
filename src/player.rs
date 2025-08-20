@@ -21,9 +21,7 @@ pub fn all_players() -> Vec<Player> {
     }).collect()
 }
 
-pub fn play_game(mut players: Vec<Player>, rounds: usize) -> Vec<Player> {
-    let rating = [[1, 5], [0, 3]];
-
+pub fn play_game(mut players: Vec<Player>, rounds: usize, rating: &[[i32; 2]]) -> Vec<Player> {
     let mut answers1 = vec![false; rounds];
     let mut answers2 = vec![false; rounds];
 
