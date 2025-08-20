@@ -50,7 +50,7 @@ impl Strategy for Averager {
 struct _Randomiser;
 impl Strategy for _Randomiser {
     fn play(&self, _answers: &[bool]) -> bool {
-        macroquad::rand::rand() % 2 == 0
+        rand::random()
     }
 }
 
