@@ -61,7 +61,7 @@ impl eframe::App for DilemmaApp {
             let plot = Plot::new("Plot");
 
             let low = players[players.len()-1].score();
-            let high = players[players.len()-1].score();
+            let high = players[0].score();
             let bars : Vec<_> = players.iter().enumerate().map(|(i, p)| {
                 Bar::new(i as f64, p.score() as f64)
                     .name(p.name())
