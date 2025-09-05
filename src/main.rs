@@ -34,7 +34,7 @@ fn main() {
             .start(
                 canvas,
                 web_options,
-                Box::new(|cc| Ok(Box::<DilemmaApp>::default())),
+                Box::new(|_| Ok(Box::<DilemmaApp>::default())),
             )
             .await;
 
