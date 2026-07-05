@@ -1,152 +1,31 @@
+use std::collections::hash_map::DefaultHasher;
+use std::hash::{Hash, Hasher};
+
 pub trait Strategy : std::fmt::Debug {
     fn play(&self, answers: &[bool]) -> bool;
+    fn description(&self) -> String;
 }
 
 fn betrayals(answers: &[bool]) -> i32 {
     answers.iter().filter(|a| !**a).count() as i32
 }
 
-#[derive(Debug, Clone, Copy)]
-struct Clever;
-impl Strategy for Clever {
-    fn play(&self, answers: &[bool]) -> bool {
-        if answers.len() == 0 { false }
-        else if answers.len() <= 3 { true }
-        else if answers.len() % 2 == 0 && answers[1] { false }
-        else if answers[0] && !answers[1] && answers[2] && !answers[3] { false }
-        else { answers[answers.len() - 1] }
-    }
+fn randomize<T: Strategy>(strategy: &T, answers: &[bool]) -> u64 {
+    let name = format!("{:?}", strategy);
+    let mut h = DefaultHasher::new();
+    (name, answers).hash(&mut h);
+    h.finish()
 }
 
 #[derive(Debug, Clone, Copy)]
-struct Tolerant;
-impl Strategy for Tolerant {
-    fn play(&self, answers: &[bool]) -> bool {
-        let mut tolerate = true;
-        for i in 1..answers.len() {
-            tolerate &= answers[i - 1] || answers[i];
-        }
-        tolerate
-    }
-}
-
-#[derive(Debug, Clone, Copy)]
-struct Agreeable;
-impl Strategy for Agreeable {
+struct Good;
+impl Strategy for Good {
     fn play(&self, _answers: &[bool]) -> bool {
         true
     }
-}
 
-#[derive(Debug, Clone, Copy)]
-struct Averager;
-impl Strategy for Averager {
-    fn play(&self, answers: &[bool]) -> bool {
-        betrayals(answers) <= answers.len() as i32 / 2
-    }
-}
-
-#[derive(Debug, Clone, Copy)]
-struct _Randomiser;
-impl Strategy for _Randomiser {
-    fn play(&self, _answers: &[bool]) -> bool {
-        rand::random()
-    }
-}
-
-#[derive(Debug, Clone, Copy)]
-struct Crook;
-impl Strategy for Crook {
-    fn play(&self, answers: &[bool]) -> bool {
-        answers.len() == 0 || (answers.len() % 2 == 0 && answers[answers.len() - 1])
-    }
-}
-
-#[derive(Debug, Clone, Copy)]
-struct EvilAvg;
-impl Strategy for EvilAvg {
-    fn play(&self, answers: &[bool]) -> bool {
-        answers.len() >= 2 && Averager.play(answers)
-    }
-}
-
-#[derive(Debug, Clone, Copy)]
-struct EvilNegative;
-impl Strategy for EvilNegative {
-    fn play(&self, answers: &[bool]) -> bool {
-        answers.len() != 0 && !answers[answers.len() - 1]
-    }
-}
-
-#[derive(Debug, Clone, Copy)]
-struct EvilTf2T;
-impl Strategy for EvilTf2T {
-    fn play(&self, answers: &[bool]) -> bool {
-        answers.len() >= 2 && (answers[answers.len() - 1] || answers[answers.len() - 2])
-    }
-}
-
-#[derive(Debug, Clone, Copy)]
-struct EvilTf1T;
-impl Strategy for EvilTf1T {
-    fn play(&self, answers: &[bool]) -> bool {
-        answers.len() != 0 && answers[answers.len() - 1]
-    }
-}
-
-#[derive(Debug, Clone, Copy)]
-struct FlipFlop;
-impl Strategy for FlipFlop {
-    fn play(&self, answers: &[bool]) -> bool {
-        answers.len() % 2 == 0
-    }
-}
-
-#[derive(Debug, Clone, Copy)]
-struct Forgive0;
-impl Strategy for Forgive0 {
-    fn play(&self, answers: &[bool]) -> bool {
-        betrayals(answers) == 0
-    }
-}
-
-#[derive(Debug, Clone, Copy)]
-struct Forgive1;
-impl Strategy for Forgive1 {
-    fn play(&self, answers: &[bool]) -> bool {
-        betrayals(answers) <= 1
-    }
-}
-
-#[derive(Debug, Clone, Copy)]
-struct Forgive2;
-impl Strategy for Forgive2 {
-    fn play(&self, answers: &[bool]) -> bool {
-        betrayals(answers) <= 2
-    }
-}
-
-#[derive(Debug, Clone, Copy)]
-struct Historic;
-impl Strategy for Historic {
-    fn play(&self, answers: &[bool]) -> bool {
-        answers.len() < 2 || answers[1]
-    }
-}
-
-#[derive(Debug, Clone, Copy)]
-struct Negative;
-impl Strategy for Negative {
-    fn play(&self, answers: &[bool]) -> bool {
-        answers.len() == 0 || !answers[answers.len() - 1]
-    }
-}
-
-#[derive(Debug, Clone, Copy)]
-struct NiceAvg;
-impl Strategy for NiceAvg {
-    fn play(&self, answers: &[bool]) -> bool {
-        answers.len() < 2 || Averager.play(answers)
+    fn description(&self) -> String {
+        "Always cooperates".to_string()
     }
 }
 
@@ -156,63 +35,184 @@ impl Strategy for Evil {
     fn play(&self, _answers: &[bool]) -> bool {
         false
     }
-}
 
-#[derive(Debug, Clone, Copy)]
-struct Provocateur;
-impl Strategy for Provocateur {
-    fn play(&self, answers: &[bool]) -> bool {
-        answers.len() != 0 && (answers.len() == 1 || answers[answers.len() - 1])
+    fn description(&self) -> String {
+        "Always betrays".to_string()
     }
 }
 
 #[derive(Debug, Clone, Copy)]
-struct Tf1t;
-impl Strategy for Tf1t {
+struct TitForTat;
+impl Strategy for TitForTat {
     fn play(&self, answers: &[bool]) -> bool {
         answers.len() == 0 || answers[answers.len() - 1]
     }
-}
 
-#[derive(Debug, Clone, Copy)]
-struct Tf2t;
-impl Strategy for Tf2t {
-    fn play(&self, answers: &[bool]) -> bool {
-        answers.len() < 2 || answers[answers.len() - 1] || answers[answers.len() - 2]
+    fn description(&self) -> String {
+        "Copies opponent's last move (cooperating in the first round)".to_string()
     }
 }
 
 #[derive(Debug, Clone, Copy)]
-struct Touchy;
-impl Strategy for Touchy {
+struct Forgive0;
+impl Strategy for Forgive0 {
     fn play(&self, answers: &[bool]) -> bool {
-        Tf1t.play(answers) && Tolerant.play(answers)
+        betrayals(answers) == 0
+    }
+
+    fn description(&self) -> String {
+        "Cooperates until gets betrayed, then always betrays".to_string()
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+struct TitForTwoTats;
+impl Strategy for TitForTwoTats {
+    fn play(&self, answers: &[bool]) -> bool {
+        answers.len() < 2 || answers[answers.len() - 1] || answers[answers.len() - 2]
+    }
+
+    fn description(&self) -> String {
+        "Cooperates, unless the opponent betrayed in both of the last two rounds".to_string()
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+struct TwoTitsForTat;
+impl Strategy for TwoTitsForTat {
+    fn play(&self, answers: &[bool]) -> bool {
+        answers.iter().rev().take(2).all(|a| *a)
+    }
+
+    fn description(&self) -> String {
+        "Cooperates, unless opponent betrayed in either of the last two rounds".to_string()
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+struct Pavlov;
+impl Strategy for Pavlov {
+    fn play(&self, answers: &[bool]) -> bool {
+        answers.iter().fold(true, |me, &a| me == a)
+    }
+
+    fn description(&self) -> String {
+        "Starts by cooperating, switches its move every time opponent betrays".to_string()
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+struct Random;
+impl Strategy for Random {
+    fn play(&self, answers: &[bool]) -> bool {
+        randomize(self, answers) % 2 == 0
+    }
+
+    fn description(&self) -> String {
+        "Cooperates or betrays randomly".to_string()
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+struct Joss;
+impl Strategy for Joss {
+    fn play(&self, answers: &[bool]) -> bool {
+        (answers.len() == 0 || answers[answers.len() - 1]) && randomize(self, answers) % 10 != 0
+    }
+
+    fn description(&self) -> String {
+        "Copies opponent's last move (cooperating in the first round) with 90% chance and betrays with 10% chance".to_string()
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+struct Davis;
+impl Strategy for Davis {
+    fn play(&self, answers: &[bool]) -> bool {
+        answers.len() < 10 || betrayals(answers) == 0
+    }
+
+    fn description(&self) -> String {
+        "Cooperates for the first 10 rounds, then betrays forever if ever betrayed".to_string()
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+struct Shubik;
+impl Strategy for Shubik {
+    fn play(&self, answers: &[bool]) -> bool {
+        let (mut k, mut r) = (0, 0);
+        for a in answers {
+            if r > 0 {
+                r -= 1;
+            } else if !*a {
+                k += 1;
+                r = k;
+            }
+        }
+        r == 0
+    }
+
+    fn description(&self) -> String {
+        "Punishes each betrayal with a run of betrayals that grows one round longer each time".to_string()
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+struct SteinRapoport;
+impl Strategy for SteinRapoport {
+    fn play(&self, answers: &[bool]) -> bool {
+        answers.len() < 4 || answers[answers.len() - 1]
+    }
+
+    fn description(&self) -> String {
+        "Cooperates for the first 4 rounds, then copies opponent's last move".to_string()
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+struct Tullock;
+impl Strategy for Tullock {
+    fn play(&self, answers: &[bool]) -> bool {
+        answers.len() < 11 || {
+            let rate = answers.iter().rev().take(10).filter(|a| **a).count() as f64 / 10.0 - 0.1;
+            (randomize(self, answers) % 1000) as f64 / 1000.0 < rate
+        }
+    }
+
+    fn description(&self) -> String {
+        "Cooperates for the first 11 rounds, then cooperates 10% less often than opponent did in the last 10 rounds".to_string()
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+struct Feld;
+impl Strategy for Feld {
+    fn play(&self, answers: &[bool]) -> bool {
+        answers.last().map_or(true, |a| *a)
+            && (randomize(self, answers) % 1000) as f64 / 1000.0 < 1.0 - (answers.len() as f64 / 200.0).min(0.5)
+    }
+
+    fn description(&self) -> String {
+        "Copies opponent's last move (cooperating in the first round), except its chance of cooperating declines from 100% to 50% over 100 rounds".to_string()
     }
 }
 
 pub fn all_strategies() -> Vec<Box<dyn Strategy>> {
     vec![
-        Box::new(Clever),
-        Box::new(Tolerant),
-        Box::new(Agreeable),
-        Box::new(Averager),
-        // Box::new(_Randomiser),
-        Box::new(Crook),
-        Box::new(EvilAvg),
-        Box::new(EvilNegative),
-        Box::new(EvilTf2T),
-        Box::new(EvilTf1T),
-        Box::new(FlipFlop),
-        Box::new(Forgive0),
-        Box::new(Forgive1),
-        Box::new(Forgive2),
-        Box::new(Historic),
-        Box::new(Negative),
-        Box::new(NiceAvg),
+        Box::new(Good),
         Box::new(Evil),
-        Box::new(Provocateur),
-        Box::new(Tf1t),
-        Box::new(Tf2t),
-        Box::new(Touchy)
+        Box::new(TitForTat),
+        Box::new(Forgive0),
+        Box::new(TitForTwoTats),
+        Box::new(TwoTitsForTat),
+        Box::new(Pavlov),
+        Box::new(Random),
+        Box::new(Joss),
+        Box::new(Davis),
+        Box::new(Shubik),
+        Box::new(SteinRapoport),
+        Box::new(Tullock),
+        Box::new(Feld),
     ]
 }
