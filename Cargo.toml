@@ -4,7 +4,15 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-eframe = "0.34"
+eframe = { version = "0.34", default-features = false, features = ["accesskit", "glow", "wayland", "x11", "web_screen_reader"] }
 egui_plot = "0.35"
+epaint_default_fonts = "0.34"
 wasm-bindgen-futures = "0.4.50"
 web-sys = "0.3.77"
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

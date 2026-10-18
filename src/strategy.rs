@@ -200,10 +200,10 @@ impl Strategy for Feld {
 
 pub fn all_strategies() -> Vec<Box<dyn Strategy>> {
     vec![
-        Box::new(Good),
         Box::new(Evil),
         Box::new(TitForTat),
         Box::new(Forgive0),
+        Box::new(Good),
         Box::new(TitForTwoTats),
         Box::new(TwoTitsForTat),
         Box::new(Pavlov),

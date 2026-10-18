@@ -30,26 +30,34 @@ pub fn all_players() -> Vec<Player> {
     }).collect()
 }
 
-pub fn play_game(mut players: Vec<Player>, rounds: usize, rating: &[[i32; 2]]) -> Vec<Player> {
+pub fn play_game(players: Vec<Player>, rounds: usize, rating: &[[i32; 2]], counts: &[usize]) -> Vec<Player> {
     let mut answers1 = vec![false; rounds];
     let mut answers2 = vec![false; rounds];
 
-    for i in 0..players.len() {
-        players[i].points = vec![0; rounds];
+    let mut players: Vec<Player> = players.into_iter().filter(|p| counts[p.i] > 0).collect();
+    let mut scores = vec![vec![0; rounds]; players.len()];
 
+    for i in 0..players.len() {
         for j in 0..players.len() {
+            let opponents = (counts[players[j].i] - (i == j) as usize) as i32;
+            if opponents == 0 {
+                continue;
+            }
             for k in 0..rounds {
                 answers1[k] = players[i].strategy.play(&answers2[0..k]);
                 answers2[k] = players[j].strategy.play(&answers1[0..k]);
-                players[i].points[k] += rating[answers1[k] as usize][answers2[k] as usize];
+                scores[i][k] += opponents * rating[answers1[k] as usize][answers2[k] as usize];
             }
         }
 
         for k in 1..rounds {
-            players[i].points[k] += players[i].points[k-1];
+            scores[i][k] += scores[i][k-1];
         }
     }
 
+    for (player, points) in players.iter_mut().zip(scores) {
+        player.points = points;
+    }
     players.sort_by_key(|p| -p.points[rounds-1]);
     players
 }
